@@ -25,6 +25,7 @@ use POSIX;
 use strict;
 use Getopt::Long;
 &Getopt::Long::config('bundling');
+#use Data::Dumper;
 
 my $status;
 my ($opt_V, $opt_h, $opt_c, $opt_H, $opt_d, $opt_s, $opt_t, $opt_a, $opt_v);
@@ -97,10 +98,10 @@ foreach my $i (@vals)
     if ($i =~ /=/)
     {
         my ($name, $value) = split(/ *= */, $i);
-        if (exists $perf::host{"map"}->{$opt_s})
+        if (exists $perf::host{$opt_s})
         {
             $value =~ s/[^-0123456789eE\.]//g;
-			foreach my $h (@{$perf::host{"map"}->{$opt_s}})
+			foreach my $h (@{$perf::host{$opt_s}})
 			{
 				if($name eq $h->{"var"})
 				{
