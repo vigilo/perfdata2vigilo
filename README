@@ -1,46 +1,43 @@
 
-==========
-Perf2Store
-==========
+===============
+Perfdata2Vigilo
+===============
 
 Introduction
 ------------
 
-"Perf2Store" is a Nagios plugin to send metrology data to StoreMe, Vigilo
-Project's metrology service.
+"Perfdata2Vigilo" is a Nagios plugin to send metrology data to the Vigilo
+message bus.
 
 Most Nagios plugins can return metrology data using the perfdata syntax: at the
 end of the return string, a pipe is added, then the various "name=value"
 couples. This is explained in the Nagios documentation. For example, the HTTP
 plugin can return the response time and the page size.
 
-Then Nagios can redirect this data to a handler. The Perf2Store plugin is this
-handler, and forwards the data to a StoreMe instance on the network, using the
-StoreMe protocol.
+Then Nagios can redirect this data to a handler. The Perfdata2Vigilo plugin is
+this handler, and forwards the data to the Vigilo message bus, through a Nagios
+connector.
 
-This protocol is very simple : it is composed of text-based UDP packets
-formatted in the following way : <indicator>;<timestamp>;<value>
-
-Perf2Store is written in Perl to run in Nagios' embedded interpretor and thus
-consume less system resources.
+Perfdata2Vigilo is written in Perl to run in Nagios' embedded interpretor and
+thus consume less system resources.
 
 The dependencies are:
 - perl
 - nagios
 
-Perf2Store uses configuration files to map Nagios' indicators to StoreMe's
+Perfdata2Vigilo uses configuration files to map Nagios' indicators to RRD
 indicators. These configuration files are written in Perl, and must follow its
 syntax. They must all be placed in a folder which will be given to the
-perf2store script on the command line. There must be a file for each supervised
-host, and the filename must be named using the following code: the "perf-"
-prefix, the hostname, and the ".pm" suffix. The precise syntax can be found in
-the example "perf2store.conf.pm.dist" file.
+perfdata2vigilo script on the command line. There must be a file for each
+supervised host, and the filename must be named using the following code: the
+"perf-" prefix, the hostname, and the ".pm" suffix. The precise syntax can be
+found in the example "perfdata2vigilo.conf.pm.dist" file.
 
 
 Installation
 ------------
 
-- Put the perf2store file in Nagios' plugins directory (usually
+- Put the perfdata2vigilo file in Nagios' plugins directory (usually
   /usr/lib/nagios/plugins)
 - Make it executable
 - Activate the plugin in Nagios using the instructions in the next section
@@ -51,7 +48,7 @@ Installation
 Configuration
 -------------
 
-Perf2Store is setup in two places:
+Perfdata2Vigilo is setup in two places:
 - activation in Nagios (and configuration of the plugin's arguments)
 - mapping between Nagios' indicators and StoreMe's
 
@@ -63,11 +60,11 @@ The perfdata handler is setup in 3 steps in Nagios:
 
   define command{
     command_name process-service-perfdata
-    command_line /usr/lib/nagios/plugins/perf2store -p /etc/vigilo-perf2store/ -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
+    command_line /usr/lib/nagios/plugins/perfdata2vigilo -p /etc/vigilo/perfdata2vigilo/ -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
   }
   define command{
     command_name process-host-perfdata
-    command_line /usr/lib/nagios/plugins/perf2store -p /etc/vigilo-perf2store/ -H '$HOSTNAME$' -s 'HOST' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
+    command_line /usr/lib/nagios/plugins/perfdata2vigilo -p /etc/vigilo/perfdata2vigilo/ -H '$HOSTNAME$' -s 'HOST' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
   }
 
 - activation of Nagios' perfdata handling. This is usually done in the
@@ -80,13 +77,13 @@ The perfdata handler is setup in 3 steps in Nagios:
 
 Mapping
 ~~~~~~~
-The mapping between Nagios' indicators and StoreMe's is done in a directory (by
-default /etc/vigilo-perf2store) containing a file per host, and which filename
+The mapping between Nagios' indicators and RRDs is done in a directory (by
+default /etc/vigilo/perfdata2vigilo) containing a file per host, and which filename
 is the "perf-" prefix, the hostname, and the ".pm" suffix. By default, the
-directory is /etc/vigilo-perf2store.
+directory is /etc/vigilo/perfdata2vigilo.
 
 These files are in Perl and must respect its syntax. An example is available in
-the perf2store.conf.pm.dist file.
+the perfdata2vigilo.conf.pm.dist file.
 
 A host file defines a hashmap with 3 entries:
 - "IPAddress": the address if the StoreMe server where the data must be sent

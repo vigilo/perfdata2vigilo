@@ -1,17 +1,26 @@
-NAGIOSDIR = /usr/lib/nagios/plugins
+LIBDIR = /usr/lib
+NAGIOSDIR = $(LIBDIR)/nagios/plugins
+SYSCONFDIR = /etc
+LOCALSTATEDIR = /var
+CONFDIR = $(SYSCONFDIR)/vigilo/perfdata2vigilo
+DESTDIR =
 
-install: install_files install_users install_permissions
+INFILES = perfdata2vigilo general.conf
 
-install_users:
+build: $(INFILES)
 
-install_files:
-	mkdir -p $(DESTDIR)$(NAGIOSDIR)/ 
-	install -p -m 755 perf2store $(DESTDIR)$(NAGIOSDIR)/
+perfdata2vigilo: perfdata2vigilo.in
+	sed -e 's,@CONFDIR@,$(CONFDIR),g' $^ > $@
+general.conf: general.conf.in
+	sed -e 's,@SYSCONFDIR@,$(SYSCONFDIR),g;s,@LOCALSTATEDIR@,$(LOCALSTATEDIR),g' $^ > $@
 
-install_permissions:
-	chown nagios:nagios $(DESTDIR)$(NAGIOSDIR)/perf2store
+install: $(INFILES)
+	mkdir -p $(DESTDIR)$(NAGIOSDIR)/ $(DESTDIR)$(CONFDIR)/
+	install -m 755 perfdata2vigilo $(DESTDIR)$(NAGIOSDIR)/
+	install -m 644 general.conf $(DESTDIR)$(NAGIOSDIR)/
 
 clean:
 	find $(CURDIR) -name "*~" -exec rm {} \;
+	rm -f $(INFILES)
 
-.PHONY: install install_users install_files install_permissions clean
+.PHONY: build install clean

@@ -1,14 +1,14 @@
 
 ==========
-Perf2Store
+Perfdata2Vigilo
 ==========
 
 Introduction
 ------------
 
-"Perf2Store" est un plugin Nagios permettant de rediriger les données de
-métrologie collectées vers StoreMe, le service de stockage de métrologie du
-projet Vigilo.
+"Perfdata2Vigilo" est un plugin Nagios permettant de rediriger les données de
+métrologie collectées vers le bus de messages, puis vers le service de stockage
+de métrologie du projet Vigilo.
 
 La plupart des plugins Nagios peuvent renvoyer des données de métrologie en
 utilisant la syntaxe perfdata : à la fin de la chaîne de caractères retournée à
@@ -17,33 +17,33 @@ collectés. Par exemple le plugin HTTP renvoie le temps de réponse et la taille
 de la page web demandée.
 
 Nagios peut ensuite rediriger ces données de performance vers un gestionnaire.
-Le plugin Perf2Store joue le rôle de ce gestionnaire, et transfère les données
+Le plugin Perfdata2Vigilo joue le rôle de ce gestionnaire, et transfère les données
 vers une instance de StoreMe par le réseau, en utilisant le protocole StoreMe.
 
 Ce protocole est très simple. Il s'agit de paquets UDP contenant du texte brut
 formaté de la façon suivante : <nom de l'indicateur>;<timestamp>;<valeur>
 
-Perf2Store est écrit en Perl pour s'exécuter dans l'interpréteur embarqué de
+Perfdata2Vigilo est écrit en Perl pour s'exécuter dans l'interpréteur embarqué de
 Nagios et consommer ainsi moins de ressources.
 
 Les dépendances de l'application sont donc :
 - perl
 - nagios
 
-Perf2Store utilise des fichiers de configuration pour faire correspondre les
+Perfdata2Vigilo utilise des fichiers de configuration pour faire correspondre les
 noms des indicateurs retournés par les plugins Nagios aux noms des indicateurs
 désirés dans la métrologie de StoreMe (fichiers RRDs). Ces fichiers de
 configuration sont en Perl, et doivent donc en respecter la syntaxe. Ils doivent
 tous être placés dans un dossier qui sera passé en paramètre au plugin, il doit
 y avoir un fichier par hôte supervisé, et le nom de ce fichier doit être composé
 du préfixe "perf-", puis du nom de l'hôte, puis du suffixe ".pm". La syntaxe
-précise est détaillée dans le fichier d'exemple perf2store.conf.pm.dist.
+précise est détaillée dans le fichier d'exemple perfdata2vigilo.conf.pm.dist.
 
 
 Installation
 ------------
 
-- Placer le fichier perf2store dans le répertoire des plugins de Nagios
+- Placer le fichier perfdata2vigilo dans le répertoire des plugins de Nagios
   (généralement /usr/lib/nagios/plugins)
 - Le rendre exécutable
 - Activer le plugin dans Nagios en suivant les instructions de la section
@@ -55,7 +55,7 @@ Installation
 Configuration
 -------------
 
-La configuration de Perf2Store se fait à deux endroits :
+La configuration de Perfdata2Vigilo se fait à deux endroits :
 - l'activation dans Nagios (configuration des arguments passés au plugin)
 - la correspondance entre les indicateurs Nagios et les indicateurs StoreMe
 
@@ -69,11 +69,11 @@ L'activation du gestionnaire de données de performances dans Nagios se fait en 
 
   define command{
     command_name process-service-perfdata
-    command_line /usr/lib/nagios/plugins/perf2store -p /etc/vigilo-perf2store/ -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
+    command_line /usr/lib/nagios/plugins/perfdata2vigilo -p /etc/vigilo/perfdata2vigilo/ -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
   }
   define command{
     command_name process-host-perfdata
-    command_line /usr/lib/nagios/plugins/perf2store -p /etc/vigilo-perf2store/ -H '$HOSTNAME$' -s 'HOST' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
+    command_line /usr/lib/nagios/plugins/perfdata2vigilo -p /etc/vigilo/perfdata2vigilo/ -H '$HOSTNAME$' -s 'HOST' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
   }
 
 - activation de la gestion des données de performances dans Nagios, et
@@ -88,12 +88,12 @@ L'activation du gestionnaire de données de performances dans Nagios se fait en 
 Configuration des indicateurs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Comme décrit précédemment, la correspondance entre les indicateurs Nagios et
-StoreMe se fait dans un dossier (par défaut /etc/vigilo-perf2store), contenant
+StoreMe se fait dans un dossier (par défaut /etc/vigilo-perfdata2vigilo), contenant
 un fichier par hôte supervisé, et dont le nom est composé du préfixe "perf-", du
 nome de l'hôte, et du suffixe ".pm".
 
 Ces fichiers sont en Perl, et doivent donc en respecter la syntaxe.  Un exemple
-de format est présenté dans le fichier "perf2store.conf.pm.dist".
+de format est présenté dans le fichier "perfdata2vigilo.conf.pm.dist".
 
 Un fichier d'hôte définit une tableau associatif contenant trois entrées :
 - une entrée "IPAddress" : l'adresse du serveur StoreMe où envoyer les données

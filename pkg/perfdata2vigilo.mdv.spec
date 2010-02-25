@@ -1,10 +1,10 @@
-%define module  perf2store
+%define module  perfdata2vigilo
 %define name    vigilo-%{module}
-%define version 1.1
-%define release 2
+%define version 1.0
+%define release 1
 
 Name:       %{name}
-Summary:    Nagios plugin to send perfdata to StoreMe
+Summary:    Nagios plugin to send perfdata to Vigilo
 Version:    %{version}
 Release:    %{release}
 Source0:    %{module}.tar.bz2
@@ -15,23 +15,28 @@ License:    GPLv2
 Requires:   nagios
 Buildarch:  noarch
 
-# Renamed from nagios-plugin-perf2store
-Obsoletes:  nagios-plugin-perf2store < 1.1-2
-Provides:   nagios-plugin-perf2store = %{version}-%{release}
-
 
 %description
-This Nagios perfdata plugin sends metrology data to StoreMe
+This Nagios perfdata plugin sends metrology data to Vigilo through a Nagios
+connector.
 This application is part of the Vigilo Project <http://vigilo-project.org>
 
 %prep
 %setup -q -n %{module}
 
 %build
+make \
+	LIBDIR=%{_libdir} \
+	SYSCONFDIR=%{_sysconfdir} \
+	LOCALSTATEDIR=%{_localstatedir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install_files
+make install \
+	DESTDIR=$RPM_BUILD_ROOT \
+	LIBDIR=%{_libdir} \
+	SYSCONFDIR=%{_sysconfdir} \
+	LOCALSTATEDIR=%{_localstatedir}
 
 
 %clean
@@ -40,7 +45,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc COPYING README README.fr
-%{_libdir}/nagios/plugins/perf2store
+%{_libdir}/nagios/plugins/%{module}
+%dir %{_sysconfdir}/vigilo/
+%config %{_sysconfdir}/vigilo/%{module}
 
 
 %changelog

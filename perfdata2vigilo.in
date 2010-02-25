@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 ################################################################################
-## Nagios perfdata to StoreMe bridge
+## Nagios perfdata to Vigilo bridge
 ##
-## Copyright 2007-2008 CS-SI
+## Copyright 2007-2010 CS-SI
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,23 +19,25 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #################################################################################
 #
-package perf2store;
+package perfdata2vigilo;
 
 use POSIX;
 use strict;
 use Getopt::Long;
 &Getopt::Long::config('bundling');
 
-my ($opt_V, $opt_h, $opt_p, $opt_H, $opt_d, $opt_s, $opt_t, $opt_a, $opt_v);
+my $status;
+my ($opt_V, $opt_h, $opt_c, $opt_H, $opt_d, $opt_s, $opt_t, $opt_a, $opt_v);
+our ($path, $connector_socket);
 my $debug;
 
 
 my $print_help = sub() {
-	printf "Nagios perfdata to StoreMe bridge\n";
+	printf "Nagios perfdata to Vigilo bridge\n";
 	printf "\nUsage:\n";
 	printf "   -V (--version)    Plugin version\n";
 	printf "   -H (--hostname)   Hostname\n";
-	printf "   -p (--path)       config files directory (/etc/vigilo-vigiconf/prod/perfdata)\n";
+	printf "   -c (--conf)       config file path (/etc/vigilo/perfdata2vigilo/general.conf)\n";
 	printf "   -s (--service)    service from which perfdata are retrieved (HOST for an host perfdata)\n";
 	printf "   -t (--timestamp)  service or host last check timestamp\n";
 	printf "   -a (--state)      host or service last check state (OK, UP, WARNING...)\n";
@@ -45,13 +47,12 @@ my $print_help = sub() {
 	
 };
 
-my $status;
 $status = GetOptions(
 		"V"     => \$opt_V, "version"      => \$opt_V,
 		"h"     => \$opt_h, "help"         => \$opt_h,
 		"d"     => \$opt_d, "debug"        => \$opt_d,
 		"H=s"   => \$opt_H, "hostname=s"   => \$opt_H,
-		"p=s"   => \$opt_p, "path=s"       => \$opt_p,
+		"c=s"   => \$opt_c, "conf=s"       => \$opt_c,
 		"s=s"   => \$opt_s, "service=s"    => \$opt_s,
 		"t=i"   => \$opt_t, "timestamp=i"  => \$opt_t,
 		"a=s"   => \$opt_a, "state=s"      => \$opt_a,
@@ -65,8 +66,7 @@ printf "0.5\n" && exit 0 if ($opt_V);
 $debug = 1 if ($opt_d);
 
 die("Please provide an hostname\n")                                      if (! $opt_H);
-die("Please provide a pathname for the configuration files directory\n") if (! $opt_p);
-die("Please provide an existing pathname: $opt_p\n")                     if (! -x $opt_p);
+unless (defined $opt_c) { $opt_c = "@CONFDIR@/general.conf"; }
 die("Please provide a service name (-s)\n")                              if (! $opt_s);
 die("Please provide a service/host state (-a)\n")                        if (! $opt_a);
 die("Please provide a perfdata output (-v)\n")                           if (! $opt_v);
@@ -75,9 +75,21 @@ die("Please provide a timestamp (-t)\n")                                 if (! $
 exit(0) if ($opt_v eq "");
 #exit(0) if ($opt_a !~ /^(UP|OK)$/);
 
-eval {require "$opt_p/perf-$opt_H.pm";} || exit(0);
+## Load the main configuration file
+do $opt_c;
 
-use IO::Socket::INET;
+if (! $path) {
+    die("Provide a pathname for the configuration files directory\n");
+} elsif (! -x $path) {
+    die("Provide an existing conf path: $path\n");
+}
+if (! $connector_socket) {
+    die("Provide the path to the nagios connector socket\n");
+}
+
+eval {require "$path/perf-$opt_H.pm";} || exit(0);
+
+use IO::Socket::UNIX;
 
 my @vals=split(/[,;: ]+/,$opt_v);
 foreach my $i (@vals)
@@ -92,22 +104,19 @@ foreach my $i (@vals)
 			{
 				if($name eq $h->{"var"})
 				{
-					my $message = $h->{"ds"}.";$opt_t;$value" ;
-					my $server;
-					my $port;
+					my $hostname;
 					if ($h->{"reRouteFor"})
 					{
-						$server = $h->{"reRouteFor"}->{"server"};
-						$port = $h->{"reRouteFor"}->{"port"};
+						$hostname = $h->{"reRouteFor"};
 					}
 					else
 					{
-						$server = $perf::host{'storeMe'}->{'IPAddress'};
-						$port = $perf::host{'storeMe'}->{'port'};
+						$hostname = $opt_H;
 					}
-					my $sock = IO::Socket::INET->new( PeerPort => $port, PeerAddr => $server, Proto => 'udp') or die ("error while trying to open socket to $server:$port");
+					my $message = "perf|$opt_t|$hostname|".$h->{"ds"}."|$value" ;
+					my $sock = IO::Socket::UNIX->new( Type => IO::Socket::SOCK_STREAM, Peer => $connector_socket) or die ("error while trying to open socket to $connector_socket");
 					$sock->send("$message\n");
-					print "send2StorMe : $message\n" if ($debug);
+					print "send2Metro : $message\n" if ($debug);
 					$sock->close();
 				}
 			}
