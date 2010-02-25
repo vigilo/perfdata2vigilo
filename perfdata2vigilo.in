@@ -34,31 +34,31 @@ my $debug;
 
 
 my $print_help = sub() {
-	printf "Nagios perfdata to Vigilo bridge\n";
-	printf "\nUsage:\n";
-	printf "   -V (--version)    Plugin version\n";
-	printf "   -H (--hostname)   Hostname\n";
-	printf "   -c (--conf)       config file path (/etc/vigilo/perfdata2vigilo/general.conf)\n";
-	printf "   -s (--service)    service from which perfdata are retrieved (HOST for an host perfdata)\n";
-	printf "   -t (--timestamp)  service or host last check timestamp\n";
-	printf "   -a (--state)      host or service last check state (OK, UP, WARNING...)\n";
-	printf "   -v (--values)     perfdata output (protect with quotes)\n\n";
-	printf "   -h (--help)       usage help \n\n";
-	printf "   -d (--debug)      debug \n\n";
-	
+    printf "Nagios perfdata to Vigilo bridge\n";
+    printf "\nUsage:\n";
+    printf "   -V (--version)    Plugin version\n";
+    printf "   -H (--hostname)   Hostname\n";
+    printf "   -c (--conf)       config file path (/etc/vigilo/perfdata2vigilo/general.conf)\n";
+    printf "   -s (--service)    service from which perfdata are retrieved (HOST for an host perfdata)\n";
+    printf "   -t (--timestamp)  service or host last check timestamp\n";
+    printf "   -a (--state)      host or service last check state (OK, UP, WARNING...)\n";
+    printf "   -v (--values)     perfdata output (protect with quotes)\n\n";
+    printf "   -h (--help)       usage help \n\n";
+    printf "   -d (--debug)      debug \n\n";
+    
 };
 
 $status = GetOptions(
-		"V"     => \$opt_V, "version"      => \$opt_V,
-		"h"     => \$opt_h, "help"         => \$opt_h,
-		"d"     => \$opt_d, "debug"        => \$opt_d,
-		"H=s"   => \$opt_H, "hostname=s"   => \$opt_H,
-		"c=s"   => \$opt_c, "conf=s"       => \$opt_c,
-		"s=s"   => \$opt_s, "service=s"    => \$opt_s,
-		"t=i"   => \$opt_t, "timestamp=i"  => \$opt_t,
-		"a=s"   => \$opt_a, "state=s"      => \$opt_a,
-		"v=s"   => \$opt_v, "values=s"     => \$opt_v,
-		);
+        "V"     => \$opt_V, "version"      => \$opt_V,
+        "h"     => \$opt_h, "help"         => \$opt_h,
+        "d"     => \$opt_d, "debug"        => \$opt_d,
+        "H=s"   => \$opt_H, "hostname=s"   => \$opt_H,
+        "c=s"   => \$opt_c, "conf=s"       => \$opt_c,
+        "s=s"   => \$opt_s, "service=s"    => \$opt_s,
+        "t=i"   => \$opt_t, "timestamp=i"  => \$opt_t,
+        "a=s"   => \$opt_a, "state=s"      => \$opt_a,
+        "v=s"   => \$opt_v, "values=s"     => \$opt_v,
+        );
 
 
 &$print_help() && exit 1 if ($status == 0);
@@ -101,26 +101,26 @@ foreach my $i (@vals)
         if (exists $perf::host{$opt_s})
         {
             $value =~ s/[^-0123456789eE\.]//g;
-			foreach my $h (@{$perf::host{$opt_s}})
-			{
-				if($name eq $h->{"var"})
-				{
-					my $hostname;
-					if ($h->{"reRouteFor"})
-					{
-						$hostname = $h->{"reRouteFor"};
-					}
-					else
-					{
-						$hostname = $opt_H;
-					}
-					my $message = "perf|$opt_t|$hostname|".$h->{"ds"}."|$value" ;
-					my $sock = IO::Socket::UNIX->new( Type => IO::Socket::SOCK_STREAM, Peer => $connector_socket) or die ("error while trying to open socket to $connector_socket");
-					$sock->send("$message\n");
-					print "send2Metro : $message\n" if ($debug);
-					$sock->close();
-				}
-			}
+            foreach my $h (@{$perf::host{$opt_s}})
+            {
+                if($name eq $h->{"var"})
+                {
+                    my $hostname;
+                    if ($h->{"reRouteFor"})
+                    {
+                        $hostname = $h->{"reRouteFor"};
+                    }
+                    else
+                    {
+                        $hostname = $opt_H;
+                    }
+                    my $message = "perf|$opt_t|$hostname|".$h->{"ds"}."|$value" ;
+                    my $sock = IO::Socket::UNIX->new( Type => IO::Socket::SOCK_STREAM, Peer => $connector_socket) or die ("error while trying to open socket to $connector_socket");
+                    $sock->send("$message\n");
+                    print "send2Metro : $message\n" if ($debug);
+                    $sock->close();
+                }
+            }
         }
         elsif ($debug)
         {
