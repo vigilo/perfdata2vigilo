@@ -1,0 +1,11 @@
+nagios-plugin-perf2store (1.1) unstable; urgency=low
+
+  * Sanitize data on the whole line
+
+ -- Aurélien Bompard <aurelien.bompard@c-s.fr>  Tue, 23 Sep 2008 10:20:49 +0200
+
+nagios-plugin-perf2store (1.0) unstable; urgency=low
+
+  * initial release
+
+ -- Aurélien Bompard <aurelien.bompard@c-s.fr>  Mon,  1 Oct 2007 10:52:21 +0200

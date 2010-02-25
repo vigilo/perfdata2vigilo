@@ -1,0 +1,11 @@
+package perf;
+our %host = (
+        storeMe => { IPAddress => "localhost", port => 50001, },
+        map     => { }
+);
+push @{$host{"map"}{"HTTP"}}, {var => "time", ds => "localhost/SFRUUA=="};
+push @{$host{"map"}{"Current Load"}}, {var => "load1", ds => "localhost/TG9hZCAwMQ=="};
+push @{$host{"map"}{"Current Load"}}, {var => "load5", ds => "localhost/TG9hZCAwNQ=="};
+push @{$host{"map"}{"Current Load"}}, {var => "load15", ds => "localhost/TG9hZCAxNQ=="};
+push @{$host{"map"}{"Current Users"}}, {var => "users", ds => "localhost/VXNlcnM="};
+1;
