@@ -1,4 +1,4 @@
-$path = "@SYSCONFDIR@/vigilo/vigiconf/prod/collector";
+$path = "@SYSCONFDIR@/vigilo/vigiconf/prod/perfdata2vigilo";
 $timeout = 0;
 $connector_socket = "@LOCALSTATEDIR@/lib/vigilo/connector-nagios/send.sock";
 
