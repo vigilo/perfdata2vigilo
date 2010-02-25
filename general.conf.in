@@ -1,0 +1,6 @@
+$path = "@SYSCONFDIR@/vigilo/vigiconf/prod/collector";
+$timeout = 0;
+$connector_socket = "@LOCALSTATEDIR@/lib/vigilo/connector-nagios/send.sock";
+
+# Don't remove this last line
+1;
