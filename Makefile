@@ -17,7 +17,7 @@ general.conf: general.conf.in
 install: $(INFILES)
 	mkdir -p $(DESTDIR)$(NAGIOSDIR)/ $(DESTDIR)$(CONFDIR)/
 	install -m 755 perfdata2vigilo $(DESTDIR)$(NAGIOSDIR)/
-	install -m 644 general.conf $(DESTDIR)$(NAGIOSDIR)/
+	install -m 644 general.conf $(DESTDIR)$(CONFDIR)/
 
 clean:
 	find $(CURDIR) -name "*~" -exec rm {} \;
