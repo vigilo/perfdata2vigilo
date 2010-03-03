@@ -9,7 +9,7 @@ INFILES = perfdata2vigilo general.conf
 
 build: $(INFILES)
 
-perfdata2vigilo: perfdata2vigilo.in
+perfdata2vigilo: perfdata2vigilo.pl.in
 	sed -e 's,@CONFDIR@,$(CONFDIR),g' $^ > $@
 general.conf: general.conf.in
 	sed -e 's,@SYSCONFDIR@,$(SYSCONFDIR),g;s,@LOCALSTATEDIR@,$(LOCALSTATEDIR),g' $^ > $@
