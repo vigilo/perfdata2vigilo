@@ -1,7 +1,7 @@
 %define module  perfdata2vigilo
 %define name    vigilo-%{module}
 %define version 1.0
-%define release 1
+%define release 1%{?svn}
 
 Name:       %{name}
 Summary:    Nagios plugin to send perfdata to Vigilo
