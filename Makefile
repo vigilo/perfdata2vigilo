@@ -1,13 +1,11 @@
-LIBDIR = /usr/lib
+NAME = perfdata2vigilo
+LIBDIR = $(PREFIX)/lib
 NAGIOSDIR = $(LIBDIR)/nagios/plugins
-SYSCONFDIR = /etc
-LOCALSTATEDIR = /var
 CONFDIR = $(SYSCONFDIR)/vigilo/perfdata2vigilo
-DESTDIR =
 
 INFILES = perfdata2vigilo general.conf
 
-build: $(INFILES)
+all: $(INFILES)
 
 perfdata2vigilo: perfdata2vigilo.pl.in
 	sed -e 's,@CONFDIR@,$(CONFDIR),g' $^ > $@
@@ -23,4 +21,4 @@ clean:
 	find $(CURDIR) -name "*~" -exec rm {} \;
 	rm -f $(INFILES)
 
-.PHONY: build install clean
+.PHONY: all install clean
