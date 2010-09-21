@@ -43,7 +43,7 @@ make install \
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
+%defattr(644,root,root,755)
 %doc COPYING README README.fr
 %{_libdir}/nagios/plugins/%{module}
 %dir %{_sysconfdir}/vigilo/
