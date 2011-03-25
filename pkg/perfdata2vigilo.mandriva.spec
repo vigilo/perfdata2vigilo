@@ -13,7 +13,7 @@ Group:      System/Servers
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-build
 License:    GPLv2
 Requires:   nagios
-Buildarch:  noarch
+#Buildarch:  noarch  # On installe dans _libdir
 
 
 %description
