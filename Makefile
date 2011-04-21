@@ -1,5 +1,8 @@
 NAME = perfdata2vigilo
 PKGNAME = vigilo-$(NAME)
+PREFIX = /usr
+SYSCONFDIR = /etc
+LOCALSTATEDIR = /var
 LIBDIR = $(PREFIX)/lib
 NAGIOSDIR = $(LIBDIR)/nagios/plugins
 CONFDIR = $(SYSCONFDIR)/vigilo/perfdata2vigilo
