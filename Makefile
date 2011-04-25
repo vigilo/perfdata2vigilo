@@ -1,18 +1,11 @@
 NAME = perfdata2vigilo
 PKGNAME = vigilo-$(NAME)
-PREFIX = /usr
 SYSCONFDIR = /etc
 LOCALSTATEDIR = /var
-LIBDIR = $(PREFIX)/lib
-NAGIOSDIR = $(LIBDIR)/nagios/plugins
-CONFDIR = $(SYSCONFDIR)/vigilo/perfdata2vigilo
+LIBDIR = /usr/lib
+NAGIOSDIR = /usr/lib$(if $(realpath /usr/lib64),64,)/nagios/plugins
+CONFDIR = $(SYSCONFDIR)/vigilo/$(NAME)
 DESTDIR =
-
-VERSION := $(shell cat VERSION.txt)
-
-INFILES = perfdata2vigilo general.conf
-
-all: $(INFILES)
 
 define find-distro
 if [ -f /etc/debian_version ]; then \
@@ -27,6 +20,12 @@ fi
 endef
 DISTRO := $(shell $(find-distro))
 DIST_TAG = $(DISTRO)
+
+VERSION := $(shell cat VERSION.txt)
+
+INFILES = perfdata2vigilo general.conf
+
+all: $(INFILES)
 
 perfdata2vigilo: perfdata2vigilo.pl.in
 	sed -e 's,@CONFDIR@,$(CONFDIR),g' $^ > $@
