@@ -1,12 +1,9 @@
 %define module  perfdata2vigilo
-%define name    vigilo-%{module}
-%define version @VERSION@
-%define release 1%{?dev}%{?dist}
 
-Name:       %{name}
+Name:       vigilo-%{module}
 Summary:    Nagios plugin to send perfdata to Vigilo
-Version:    %{version}
-Release:    %{release}
+Version:    @VERSION@
+Release:    @RELEASE@%{?dist}
 Source0:    %{name}-%{version}.tar.gz
 URL:        http://www.projet-vigilo.org
 Group:      System/Servers
