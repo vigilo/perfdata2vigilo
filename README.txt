@@ -2,7 +2,7 @@ Perfdata2Vigilo
 ===============
 
 Perfdata2Vigilo est le composant de Vigilo_ qui réceptionne les messages de
-performance retournés par les plugins Nagios et les transmet au bus XMPP.
+performance retournés par les plugins Nagios et les transmet au bus.
 
 Pour les détails du fonctionnement de Perfdata2Vigilo, se reporter à la
 `documentation officielle`_.
