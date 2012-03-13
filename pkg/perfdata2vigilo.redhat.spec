@@ -23,17 +23,17 @@ This application is part of the Vigilo Project <http://vigilo-project.org>
 
 %build
 make \
-	LIBDIR=%{_libdir} \
-	SYSCONFDIR=%{_sysconfdir} \
-	LOCALSTATEDIR=%{_localstatedir}
+    LIBDIR=%{_libdir} \
+    SYSCONFDIR=%{_sysconfdir} \
+    LOCALSTATEDIR=%{_localstatedir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	LIBDIR=%{_libdir} \
-	SYSCONFDIR=%{_sysconfdir} \
-	LOCALSTATEDIR=%{_localstatedir}
+    DESTDIR=$RPM_BUILD_ROOT \
+    LIBDIR=%{_libdir} \
+    SYSCONFDIR=%{_sysconfdir} \
+    LOCALSTATEDIR=%{_localstatedir}
 
 
 %clean
