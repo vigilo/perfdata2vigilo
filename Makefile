@@ -16,10 +16,8 @@ install: $(INFILES)
 	install -m 755 perfdata2vigilo $(DESTDIR)$(NPLUGDIR)/
 	install -m 644 general.conf $(DESTDIR)$(CONFDIR)/
 
-clean:
-	find $(CURDIR) -name "*~" -exec rm {} \;
+clean: clean_common
 	rm -f $(INFILES)
-	rm -rf build
 
 
 .PHONY: all install clean rpm sdist
