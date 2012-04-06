@@ -39,13 +39,12 @@ my $print_help = sub() {
     printf "   -V (--version)    Plugin version\n";
     printf "   -H (--hostname)   Hostname\n";
     printf "   -c (--conf)       config file path (/etc/vigilo/perfdata2vigilo/general.conf)\n";
-    printf "   -s (--service)    service from which perfdata are retrieved (HOST for an host perfdata)\n";
-    printf "   -t (--timestamp)  service or host last check timestamp\n";
-    printf "   -a (--state)      host or service last check state (OK, UP, WARNING...)\n";
+    printf "   -s (--service)    service from which perfdata are retrieved (do not use this option for host perfdata)\n";
+    printf "   -t (--timestamp)  last check timestamp\n";
+    printf "   -a (--state)      last check state (OK, UP, WARNING...)\n";
     printf "   -v (--values)     perfdata output (protect with quotes)\n\n";
     printf "   -h (--help)       usage help \n\n";
     printf "   -d (--debug)      debug \n\n";
-    
 };
 
 $status = GetOptions(
@@ -68,13 +67,12 @@ $debug = 1 if ($opt_d);
 
 die("Please provide an hostname\n")                                      if (! $opt_H);
 unless (defined $opt_c) { $opt_c = "@CONFDIR@/general.conf"; }
-die("Please provide a service name (-s)\n")                              if (! $opt_s);
+$opt_s = ""                                                              if (! $opt_s);
 die("Please provide a service/host state (-a)\n")                        if (! $opt_a);
 die("Please provide a perfdata output (-v)\n")                           if (! $opt_v);
 die("Please provide a timestamp (-t)\n")                                 if (! $opt_t);
 
 exit(0) if ($opt_v eq "");
-#exit(0) if ($opt_a !~ /^(UP|OK)$/);
 
 ## Load the main configuration file
 do $opt_c;
