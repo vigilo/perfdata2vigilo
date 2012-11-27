@@ -1,14 +1,15 @@
-Source: nagios-plugin-perf2store
+Source: vigilo-perfdata2vigilo
 Section: vigilo
 Priority: extra
-Maintainer: Aurélien BOMPARD <aurelien.bompard@c-s.fr>
+Maintainer: Vigilo Team <contact@projet-vigilo.org>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.2
 
-Package: nagios-plugin-perf2store
+Package: vigilo-perfdata2vigilo
 Architecture: all
 Depends: nagios2 | nagios3
-Description: Nagios plugin to send perfdata to StoreMe
- This Nagios perfdata plugin sends metrology data to StoreMe
+Description: Nagios plugin to send performance data to Vigilo
+ This Nagios plugin sends performance data (metrology)
+ to Vigilo.
  .
  This application is part of the Vigilo Project <http://vigilo-project.org>

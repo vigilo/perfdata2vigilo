@@ -1,11 +1,12 @@
-nagios-plugin-perf2store (1.1) unstable; urgency=low
+vigilo-perfdata2vigilo (3.0.0.g79567ea-1) unstable; urgency=low
 
-  * Sanitize data on the whole line
+  * New upstream release.
 
- -- Aurélien Bompard <aurelien.bompard@c-s.fr>  Tue, 23 Sep 2008 10:20:49 +0200
+ -- François Poirotte <francois.poirotte@c-s.fr>  Sat, 24 Nov 2012 12:31:50 +0100
 
-nagios-plugin-perf2store (1.0) unstable; urgency=low
+vigilo-perfdata2vigilo (2.1.2.dev-g0d9fe29-1) unstable; urgency=low
 
-  * initial release
+  * New version for Vigilo 2.x.
 
- -- Aurélien Bompard <aurelien.bompard@c-s.fr>  Mon,  1 Oct 2007 10:52:21 +0200
+ -- François Poirotte <francois.poirotte@c-s.fr>  Sat, 10 Nov 2012 18:31:49 +0200
+

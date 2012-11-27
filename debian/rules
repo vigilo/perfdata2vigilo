@@ -2,43 +2,16 @@
 # -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
 
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
+PKGNAME=$(shell printf "%s" `dpkg-parsechangelog | grep '^Source:' | cut -d: -f2`)
+VERSION=$(shell printf "%s" `dpkg-parsechangelog | grep '^Version:' | cut -d: -f2-`)
 
-BUILDROOT = $(CURDIR)/debian/nagios-plugin-perf2store
+%:
+	dh $@
 
-build: 
+override_dh_auto_install:
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(PKGNAME)
 
-clean:
-	dh_testdir
-	dh_testroot
-	dh_clean 
-
-install: 
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-	dh_installdirs
-	$(MAKE) install_files DESTDIR=$(BUILDROOT)
-	dh_install
-
-binary: install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installexamples
-	dh_strip
-	dh_compress 
-	dh_fixperms
-	dh_perl
-	dh_makeshlibs
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-.PHONY: build clean binary install
+.PHONY: override_dh_auto_install
