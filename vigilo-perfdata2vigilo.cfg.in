@@ -1,0 +1,11 @@
+# Commands to forward the host and service's performance data
+# to Vigilo.
+define command{
+    command_name    process-service-perfdata
+    command_line    @PLUGINDIR@/perfdata2vigilo -c /etc/vigilo/perfdata2vigilo/general.conf -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
+}
+define command{
+    command_name    process-host-perfdata
+    command_line    @PLUGINDIR@/perfdata2vigilo -c /etc/vigilo/perfdata2vigilo/general.conf -H '$HOSTNAME$' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
+}
+
