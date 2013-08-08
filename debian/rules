@@ -11,7 +11,13 @@ VERSION=$(shell printf "%s" `dpkg-parsechangelog | grep '^Version:' | cut -d: -f
 %:
 	dh $@
 
+override_dh_auto_clean:
+	dh_auto_clean
+ifneq "$(NOPY)" ""
+	-rm -f $(CURDIR)/debian/docs $(CURDIR)/debian/copyright
+endif
+
 override_dh_auto_install:
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(PKGNAME)
 
-.PHONY: override_dh_auto_install
+.PHONY: override_dh_auto_install override_dh_auto_clean
