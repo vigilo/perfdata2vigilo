@@ -69,7 +69,7 @@ die("Please provide an hostname\n")                                      if (! $
 unless (defined $opt_c) { $opt_c = "@CONFDIR@/general.conf"; }
 $opt_s = ""                                                              if (! $opt_s);
 die("Please provide a service/host state (-a)\n")                        if (! $opt_a);
-die("Please provide a perfdata output (-v)\n")                           if (! $opt_v);
+die("Please provide a perfdata output (-v)\n")                           if (! defined($opt_v));
 die("Please provide a timestamp (-t)\n")                                 if (! $opt_t);
 
 exit(0) if ($opt_v eq "");
