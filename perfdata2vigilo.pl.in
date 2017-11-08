@@ -117,6 +117,8 @@ foreach my $i (@vals)
                     $sock->send("$message\n");
                     print "send2Metro : $message\n" if ($debug);
                     $sock->close();
+
+                    last;
                 }
             }
         }
