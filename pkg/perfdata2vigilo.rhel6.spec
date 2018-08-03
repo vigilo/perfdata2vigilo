@@ -5,7 +5,7 @@ Summary:    Nagios plugin to send perfdata to Vigilo
 Version:    @VERSION@
 Release:    @RELEASE@%{?dist}
 Source0:    %{name}-%{version}.tar.gz
-URL:        http://www.vigilo-nms.com
+URL:        https://www.vigilo-nms.com
 Group:      Applications/System
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-build
 License:    GPLv2
@@ -16,7 +16,7 @@ Requires:   nagios
 %description
 This Nagios perfdata plugin sends metrology data to Vigilo through a Nagios
 connector.
-This application is part of the Vigilo Project <http://vigilo-nms.com>
+This application is part of the Vigilo Project <https://www.vigilo-nms.com>
 
 %prep
 %setup -q
