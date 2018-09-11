@@ -4,7 +4,7 @@ Name:       vigilo-%{module}
 Summary:    Nagios plugin to send perfdata to Vigilo
 Version:    @VERSION@
 Release:    @RELEASE@%{?dist}
-Source0:    %{name}-%{version}.tar.gz
+Source0:    %{name}-%{version}@PREVERSION@.tar.gz
 URL:        https://www.vigilo-nms.com
 Group:      Applications/System
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-build
@@ -19,7 +19,7 @@ connector.
 This application is part of the Vigilo Project <https://www.vigilo-nms.com>
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}@PREVERSION@
 
 %build
 make \
