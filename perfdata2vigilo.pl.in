@@ -90,42 +90,69 @@ eval {require "$path/perf-$opt_H.pm";} || exit(0);
 
 use IO::Socket::UNIX;
 
-my @vals=split(/[,;: ]+/,$opt_v);
-foreach my $i (@vals)
-{
-    if ($i =~ /=/)
-    {
-        my ($name, $value) = split(/ *= */, $i);
-        if (exists $perf::host{$opt_s})
-        {
-            $value =~ s/[^-0123456789eE\.]//g;
-            foreach my $h (@{$perf::host{$opt_s}})
-            {
-                if($name eq $h->{"var"})
-                {
-                    my $hostname;
-                    if ($h->{"reRouteFor"})
-                    {
-                        $hostname = $h->{"reRouteFor"};
-                    }
-                    else
-                    {
-                        $hostname = $opt_H;
-                    }
-                    my $message = "perf|$opt_t|$hostname|".$h->{"ds"}."|$value" ;
-                    my $sock = IO::Socket::UNIX->new( Type => IO::Socket::SOCK_STREAM, Peer => $connector_socket) or die ("error while trying to open socket to $connector_socket");
-                    $sock->send("$message\n");
-                    print "send2Metro : $message\n" if ($debug);
-                    $sock->close();
+my $exists = exists $perf::host{$opt_s};
+my $sock = undef;
 
-                    last;
-                }
-            }
-        }
-        elsif ($debug)
+# The performance data uses the following general syntax:
+# 'label'=value[UOM1];[warn];[crit];[min];[max]
+#
+# General rules (taken from https://nagios-plugins.org/doc/guidelines.html#AEN200):
+# - There is one such block per metric, with the various blocks separated by spaces.
+# - The single quotes around the label are optional, unless the label contains spaces.
+# - Single quotes may also be used by doubling them.
+#   NOTE: we do not support labels containing single quotes.
+# - The [UOM], [warn], [crit], [min] & [max] fields may all be empty,
+#   with trailing semi-colons being optional.
+# - The value must match this regex: "[-0-9.]*" (minus the quotes),
+#   but may also be "U" if the value is unknown/could not be determined.
+#   In practice, some checks are known to return values in scientific notation.
+#   Some checks may also use "u" instead of "U" for unknown values.
+#   We chose to tolerate them by allowing those special cases.
+# - [UOM] (unit of measurement) is taken from a fixed list of possible units.
+#
+# Here's a few examples of valid performance data:
+#   rta=1.2 loss=0%
+#   'some metric'=42;10;20;0;100
+#   l''horreur1=23 'l''horreur2'=108
+while ($opt_v =~ /('(?P<label>[^'=]+)'|(?P<label>[^=]+))=(?P<value>([-0-9.eE]+|[uU]))(?P<unit>[^ ;]*)[^ ]* ?/g)
+{
+    my ($name, $value, $unit) = ($+{label}, $+{value}, $+{unit});
+
+    if (!$exists)
+    {
+        print "$name not found\n" if $debug;
+        last;
+    }
+
+    foreach my $h (@{$perf::host{$opt_s}})
+    {
+        if ($name eq $h->{"var"})
         {
-            print "$name not found\n";
+            my $hostname;
+            if ($h->{"reRouteFor"})
+            {
+                $hostname = $h->{"reRouteFor"};
+            }
+            else
+            {
+                $hostname = $opt_H;
+            }
+
+            if (!defined($sock))
+            {
+                $sock = IO::Socket::UNIX->new( Type => IO::Socket::SOCK_STREAM, Peer => $connector_socket)
+                    or die ("error while trying to open socket to $connector_socket");
+            }
+
+            my $message = "perf|$opt_t|$hostname|".$h->{"ds"}."|$value" ;
+            $sock->send("$message\n");
+            print "send2Metro : $message\n" if ($debug);
+            last;
         }
     }
 }
 
+if (defined($sock))
+{
+    $sock->close();
+}
