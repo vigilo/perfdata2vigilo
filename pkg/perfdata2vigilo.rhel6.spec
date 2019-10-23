@@ -1,4 +1,6 @@
 %define module  perfdata2vigilo
+# Le code est noarch, mais dépend du chemin vers les plugins Nagios (arch-dependent)
+%global debug_package %{nil}
 
 Name:       vigilo-%{module}
 Summary:    Nagios plugin to send perfdata to Vigilo
