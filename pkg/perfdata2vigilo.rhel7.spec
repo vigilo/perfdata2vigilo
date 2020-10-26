@@ -1,1 +1,0 @@
-perfdata2vigilo.rhel6.spec
