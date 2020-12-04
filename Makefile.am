@@ -15,5 +15,5 @@ general.conf: general.conf.in Makefile
 	$(TOUCH) --reference=$< $@
 
 vigilo-perfdata2vigilo.cfg: vigilo-perfdata2vigilo.cfg.in Makefile
-	$(SED) -e 's,@PLUGINDIR[@],$(nagiospluginsconfdir),g' $< > $@
+	$(SED) -e 's,@SYSCONFDIR[@],$(sysconfdir),g;s,@PLUGINDIR[@],$(nagiospluginsdir),g' $< > $@
 	$(TOUCH) --reference=$< $@

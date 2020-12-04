@@ -2,10 +2,10 @@
 # to Vigilo.
 define command{
     command_name    process-service-perfdata
-    command_line    @PLUGINDIR@/perfdata2vigilo -c /etc/vigilo/perfdata2vigilo/general.conf -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
+    command_line    @PLUGINDIR@/perfdata2vigilo -c @SYSCONFDIR@/vigilo/perfdata2vigilo/general.conf -H '$HOSTNAME$' -s '$SERVICEDESC$' -a '$SERVICESTATE$' -t '$LASTSERVICECHECK$' -v '$SERVICEPERFDATA$'
 }
 define command{
     command_name    process-host-perfdata
-    command_line    @PLUGINDIR@/perfdata2vigilo -c /etc/vigilo/perfdata2vigilo/general.conf -H '$HOSTNAME$' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
+    command_line    @PLUGINDIR@/perfdata2vigilo -c @SYSCONFDIR@/vigilo/perfdata2vigilo/general.conf -H '$HOSTNAME$' -a '$HOSTSTATE$' -t '$LASTHOSTCHECK$' -v '$HOSTPERFDATA$'
 }
 
